@@ -102,6 +102,12 @@ void ft_readFile(char *filename, struct flags *flagi) {
   int slashn = 0;
   int lastslashn = 0;
   int firstLine = 1;
+
+  int i = 0;
+
+  char *allch;
+  char *buffer;
+
   FILE *file = fopen(filename, "r");
 
   if (file == NULL) {
@@ -110,6 +116,29 @@ void ft_readFile(char *filename, struct flags *flagi) {
   }
 
   while ((ch = fgetc(file)) != EOF) {
+    if(i = 0) {
+      allch = malloc(1 * sizeof(char) + 1);
+      allch[i] = ch;
+      allch[i+1] = '\0';
+      printf("%c", allch[i]);
+    }
+    buffer = strdup(allch);
+    free(allch);
+    allch = malloc(strlen(buffer) * sizeof(char) + 2);
+    strcpy(allch, buffer);
+    allch[i] = ch;
+    allch[i+1] = '\0';
+    i++;
+    free(buffer);
+
+    printf("%s", allch);
+    
+    
+    
+    
+    
+    
+    
     /* if (flagi->s && ch == '\n') {
       slashn++;
       if (slashn >= 1) {
