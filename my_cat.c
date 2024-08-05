@@ -98,16 +98,8 @@ void ft_readFilesNames(int argc, char *argv[], char **names,
 
 void ft_readFile(char *filename, struct flags *flagi) {
   char ch;
-  int lineNumber = 1;
-  int slashn = 0;
-  int lastslashn = 0;
-  int firstLine = 1;
-
-  int i = 0;
-
-  char *allch;
-  char *buffer;
-
+  int ncount = 0;
+  int lineCount = 1;
   FILE *file = fopen(filename, "r");
 
   if (file == NULL) {
@@ -115,72 +107,45 @@ void ft_readFile(char *filename, struct flags *flagi) {
     return;
   }
 
-  while ((ch = fgetc(file)) != EOF) {
-    if(i = 0) {
-      allch = malloc(1 * sizeof(char) + 1);
-      allch[i] = ch;
-      allch[i+1] = '\0';
-      printf("%c", allch[i]);
-    }
-    buffer = strdup(allch);
-    free(allch);
-    allch = malloc(strlen(buffer) * sizeof(char) + 2);
-    strcpy(allch, buffer);
-    allch[i] = ch;
-    allch[i+1] = '\0';
-    i++;
-    free(buffer);
-
-    printf("%s", allch);
-    
-    
-    
-    
-    
-    
-    
-    /* if (flagi->s && ch == '\n') {
-      slashn++;
-      if (slashn >= 1) {
-        lastslashn = 1;
-        continue;
+  for (char last = '\n'; (ch = fgetc(file)) != EOF; last = ch) {
+    if (last == '\n') {
+      if (flagi->s) {
+        if (ch == '\n') {
+          if (ncount == 1) {
+            continue;
+          }
+          ncount = 1;
+        } else {
+          ncount = 0;
+        }
       }
-    } else {
-      if (lastslashn) putchar('\n');
-      lastslashn = 0;
-      slashn = 0;
+      if (flagi->n && (!flagi->b || ch != '\n')) {
+        printf("%6d\t", lineCount);
+        lineCount++;
+      }
     }
-
-    if (flagi->e && ch == '\n') {
-      putchar('$');
-    }
-
-    if (flagi->b && ch == '\n') {
-      lineNumber++;
-    }
-
-    if (flagi->n && firstLine) {
-      printf("%6d	 ", lineNumber++);
-      firstLine = 0;
-    } else if (flagi->n && ch == '\n') {
-      putchar(ch);
-      printf("%6d	 ", lineNumber++);
-      continue;
-    }
-
-    if (flagi->t && ch == '\t') {
+    if (ch == '\n') {
+      if (flagi->e) {
+        putchar('$');
+      }
+    } else if (ch == '\t') {
       printf("^I");
       continue;
-    }
-
-    if (flagi->v) {
-      if (!isprint(ch) && ch != '\n' && ch != '\t') {
-        printf("M-^%c", ch ^ 0x40);
+    } else if (flagi->v) {
+      if (!isascii(ch) || !isprint(ch)) {
+        printf("M-");
+      }
+      if (iscntrl(ch)) {
+        putchar('^');
+        if (ch == 127) {
+          putchar('?');
+        } else {
+          putchar(ch + 64);
+        }
         continue;
       }
     }
-    putchar(ch); */
+    putchar(ch);
   }
-
   fclose(file);
 }
