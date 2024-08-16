@@ -54,6 +54,7 @@ void ft_readFlags(int argc, char *argv[], struct flags *flagi) {
         switch (argv[i][j]) {
           case 'b':
             flagi->b = 1;
+            flagi->n = 1;
             break;
           case 'e':
             flagi->e = 1;
@@ -119,7 +120,7 @@ void ft_readFile(char *filename, struct flags *flagi) {
           ncount = 0;
         }
       }
-      if (flagi->n || (!flagi->b || ch != '\n')) {
+      if (flagi->n && (!flagi->b || ch != '\n')) {
         printf("%6d\t", lineCount);
         lineCount++;
       }
