@@ -119,7 +119,7 @@ void ft_readFile(char *filename, struct flags *flagi) {
           ncount = 0;
         }
       }
-      if (flagi->n && (!flagi->b || ch != '\n')) {
+      if (flagi->n || (!flagi->b || ch != '\n')) {
         printf("%6d\t", lineCount);
         lineCount++;
       }
@@ -128,7 +128,7 @@ void ft_readFile(char *filename, struct flags *flagi) {
       if (flagi->e) {
         putchar('$');
       }
-    } else if (ch == '\t') {
+    } else if (ch == '\t' && flagi->t) {
       printf("^I");
       continue;
     } else if (flagi->v) {
