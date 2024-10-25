@@ -15,9 +15,11 @@ struct flags {
 };
 
 void ft_readFlags(int argc, char *argv[], struct flags *flagi);
-void ft_readFilesNames(int argc, char *argv[], char **names,
-                       struct flags *flagi);
+void ft_readFilesNames(int argc, char *argv[], char **names);
 void ft_readFile(char *filename, struct flags *flagi);
+
+char *fnc_strdup(char *src);
+int fnc_isascii(int ch);
 
 int main(int argc, char *argv[]) {
   struct flags flagi = {0};  // Инициализация структуры
@@ -30,7 +32,7 @@ int main(int argc, char *argv[]) {
   }
 
   ft_readFlags(argc, argv, &flagi);
-  ft_readFilesNames(argc, argv, filesNames, &flagi);
+  ft_readFilesNames(argc, argv, filesNames);
 
   if (flagi.fileNamesCount > 0) {
     for (int i = 0; i < flagi.fileNamesCount; i++) {
@@ -45,6 +47,34 @@ int main(int argc, char *argv[]) {
   free(filesNames);
 
   return 0;
+}
+
+char *fnc_strdup(char *src) {
+  int i = 0;
+  char *res;
+
+  while (src[i]) {
+    i++;
+  }
+  res = (char *)malloc(sizeof(*res) * i + 1);
+  if (res == NULL) {
+    return (NULL);
+  }
+  i = 0;
+  while (src[i]) {
+    res[i] = src[i];
+    i++;
+  }
+  res[i] = '\0';
+  return (res);
+}
+
+int fnc_isascii(int ch) {
+  if (ch >= 0 && ch <= 127) {
+    return (1);
+  } else {
+    return(0);
+  }
 }
 
 void ft_readFlags(int argc, char *argv[], struct flags *flagi) {
@@ -82,12 +112,11 @@ void ft_readFlags(int argc, char *argv[], struct flags *flagi) {
   }
 }
 
-void ft_readFilesNames(int argc, char *argv[], char **names,
-                       struct flags *flagi) {
+void ft_readFilesNames(int argc, char *argv[], char **names) {
   int index = 0;
   for (int i = 1; i < argc; i++) {
     if (argv[i][0] != '-') {
-      names[index] = strdup(argv[i]);
+      names[index] = fnc_strdup(argv[i]);
       if (names[index] == NULL) {
         fprintf(stderr, "Память пыталась, но не смогла выделиться\n");
         exit(1);
@@ -133,7 +162,7 @@ void ft_readFile(char *filename, struct flags *flagi) {
       printf("^I");
       continue;
     } else if (flagi->v) {
-      if (!isascii(ch) || !isprint(ch)) {
+      if (!fnc_isascii(ch) || !isprint(ch)) {
         printf("M-");
       }
       if (iscntrl(ch)) {
